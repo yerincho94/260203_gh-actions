@@ -1,0 +1,16 @@
+name: 04. make issue
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "echo로 출력할 메시지"
+        required: false
+        default: "echo와 로그를 설정"
+jobs:
+  issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: echo
+        run: |
+          echo "메시지 : ${{ inputs.message }}"
