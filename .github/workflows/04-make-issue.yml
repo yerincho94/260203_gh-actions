@@ -6,6 +6,8 @@ on:
         description: "echo로 출력할 메시지"
         required: false
         default: "echo와 로그를 설정"
+  push:
+
 jobs:
   issue:
     runs-on: ubuntu-latest
@@ -21,9 +23,10 @@ jobs:
         run: |
           echo "메시지 : ${{ inputs.message }}"
     
-      - name: 이슈 생성
+      - name: 이슈 생성 (workflow_dispatch)
         uses: actions/github-script@v8  # 이미 작성된 run들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
         # node 기반의 js를 작동하게 하는 것.
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
             script: |
@@ -32,4 +35,18 @@ jobs:
                     repo: context.repo.repo,
                     title: '이슈 자동 생성',
                     body : '${{ inputs.message }}'
+                })
+
+      - name: 이슈 생성 (push)
+        uses: actions/github-script@v8  # 이미 작성된 run들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
+        # node 기반의 js를 작동하게 하는 것.
+        if: ${{ github.event_name == 'push' }}
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: '이슈 자동 생성(push)',
+                    body : '최근 ${{ github.ref_name }} 브랜치에 푸시가 발생했습니다.'
                 })
