@@ -1,35 +1,35 @@
 name: 05. slack
 
 on:
-    push:
+  push:
 
 jobs:
-    slack:
-        runs-on: ubuntu-latest
+  slack:
+    runs-on: ubuntu-latest
 
-        env:
-          var_msg: ${{ vars.message }}
-          sec_msg: ${{ secrets.message2 }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    env:
+      var_msg: ${{ vars.message }}
+      sec_msg: ${{ secrets.message2 }}
 
-        steps:
-            - name: log
-            #   run: echo "정상 작동 중"
-              run: |
-               echo "${{ vars.message }}"
-               echo "${{ secrets.message2 }}"
-               echo "${sec_msg}"
-            
-            - name: slack
-              uses: slackapi/slack-github-action@v2.1.1
-              with:
-                webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-                webhook-type: incoming-webhook
+    steps:
+      - name: log
+        #   run: echo "정상 작동 중"
+        run: |
+          echo "${{ vars.message }}"
+          echo "${{ secrets.message2 }}"
+          echo "${var_msg}"
+          echo "${sec_msg}"
 
-                payload: |
-                    text: |
-                    ${{ env.var_msg}}
-                    - repo: ${{ github.repository }}
-                    - branch: ${{ github.ref_name }}
-                    - actor: ${{ github.actor }}
-                    - sha: ${{ github.sha }}
+      - name: slack
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+
+          payload: |
+            text: |
+              ${{ env.var_msg}}
+              - repo: ${{ github.repository }}
+              - branch: ${{ github.ref_name }}
+              - actor: ${{ github.actor }}
+              - sha: ${{ github.sha }}
