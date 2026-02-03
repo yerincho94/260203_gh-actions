@@ -10,6 +10,7 @@ jobs:
         env:
           var_msg: ${{ vars.message }}
           sec_msg: ${{ secrets.message2 }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
         steps:
             - name: log
@@ -26,9 +27,9 @@ jobs:
                 webhook-type: incoming-webhook
 
                 payloads: |
-                    text: |
-                      ${var_msg}
-                        - repo: ${{ github.repository }}
-                        - branch: ${{ github.ref_name }}
-                        - actor: ${{ github.actor }}
-                        - sha: ${{ github.sha }}
+                   text: |
+                      ${SLACK_WEBHOOK_URL}
+                      - repo: ${{ github.repository }}
+                      - branch: ${{ github.ref_name }}
+                      - actor: ${{ github.actor }}
+                      - sha: ${{ github.sha }}
