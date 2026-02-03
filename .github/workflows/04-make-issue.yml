@@ -7,46 +7,67 @@ on:
         required: false
         default: "echo와 로그를 설정"
   push:
+    # branches: "main"
+    branches: ["main"]
+  pull_request:
 
 jobs:
   issue:
     runs-on: ubuntu-latest
 
-    # GITHUB_TOKEN -> secrets.GITHUB_TOKEN <- 실행시 사용하는 PAT 토큰
+    # GITHUB_TOKEN <- secrets.GITHUB_TOKEN <- 실행 시 사용하는 PAT 토큰
     # 1. 내 토큰을 나중에 secret에 주입을 해서 사용
-    # 2. GITHUB_ACTIONS에게 상위 권한 주는 방법
+    # 2. GITHUB ACTIONS에게 상위 권한 주는 방법
     permissions:
-        issues: write
+      issues: write
 
     steps:
       - name: echo
         run: |
           echo "메시지 : ${{ inputs.message }}"
-    
+
       - name: 이슈 생성 (workflow_dispatch)
-        uses: actions/github-script@v8  # 이미 작성된 run들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
-        # node 기반의 js를 작동하게 하는 것.
+        uses: actions/github-script@v8 # 이미 작성된 run 들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
+        # node 기반의 javascript를 작동하게 하는 것
         if: ${{ github.event_name == 'workflow_dispatch' }}
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-                await github.rest.issues.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: '이슈 자동 생성',
-                    body : '${{ inputs.message }}'
-                })
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '이슈 자동 생성',
+                body : '${{ inputs.message }}'
+            })
 
-      - name: 이슈 생성 (push)
-        uses: actions/github-script@v8  # 이미 작성된 run들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
-        # node 기반의 js를 작동하게 하는 것.
-        if: ${{ github.event_name == 'push' }}
+      - name: 이슈 생성 (push main)
+        uses: actions/github-script@v8 # 이미 작성된 run 들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
+        # node 기반의 javascript를 작동하게 하는 것
+        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-                await github.rest.issues.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: '이슈 자동 생성(push)',
-                    body : '최근 ${{ github.ref_name }} 브랜치에 푸시가 발생했습니다.'
-                })
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '이슈 자동 생성 (push)',
+                body : '최근 ${{ github.ref_name }} 브랜치에 푸시가 발생했습니다.'
+            })
+
+      - name: 이슈 생성 (pull request)
+        uses: actions/github-script@v8
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '이슈 자동 생성 (pull request)',
+                body : `- 풀 리퀘스트가 생성되었습니다!
+                    - PR 제목 : ${context.payload.pull_request.title}
+                    - 생성자 : ${context.payload.pull_request.user.login}
+                    - 대상 브랜치 : ${context.payload.pull_request.base.ref}
+                    - 합치려는 브랜치 : ${context.payload.pull_request.head.ref}
+                    - PR URL : ${context.payload.pull_request.html_url}`
+            })
