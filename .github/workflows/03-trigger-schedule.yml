@@ -1,0 +1,29 @@
+name: 03. trigger schedule
+
+on:
+    schedule:
+        # https://crontab.guru
+        # cron 형식(UTC 기준): 분 시 일 월 요일
+        # - "* * * * *"  : 매 분
+        # - "*/5 * * * *": 5분마다
+        # - "0 0 * * *"  : 매일 00:00(UTC)
+        # 다만 GitHub Actions 스케줄은 정확히 1분마다 실행되지 않을 수 있고,
+        # 실제로는 대기/지연되어 15~30분 간격처럼 보일 때도 있습니다.
+        # 무료로 GItHub Actions Runner를 사용
+        # - 만약 실행이 몰리면 fail 날 수있음 (주로 아침)
+        # - 같은 repository 내의 같은 actions 내의 job이라면, 실행 겹쳤을 경우 우선순위가 밀릴 수 있음
+        # (schedule - work dispatch <- 최근에 work_dispatch가 실행되었다면 schedule 실행 안함)
+        # -> 직접 리눅스 등에서 cronjob을 실행하거나, aws -> event bridge로 실행
+        # -> 매분 실행을 걸어놔도 최소 5분, 길게는 30분(15~30분) 정도 텀을 두고 실행되게 됨.
+        - cron: "* * * * *" # 매분마다 실행
+        # 시간을 5 9 * * * -> 9시5분 마다 작동 -> UTC시간 기준 -> 한국시간에 9시간 더하기
+        # -> 18시에 작동함
+    workflow_dispatch: # 직접 구동
+
+
+jobs:
+    echo:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 스케줄 실행
+              run: "echo 스케줄 실행 시각(UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
