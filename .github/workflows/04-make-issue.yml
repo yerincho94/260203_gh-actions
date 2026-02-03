@@ -10,6 +10,12 @@ jobs:
   issue:
     runs-on: ubuntu-latest
 
+    # GITHUB_TOKEN -> secrets.GITHUB_TOKEN <- 실행시 사용하는 PAT 토큰
+    # 1. 내 토큰을 나중에 secret에 주입을 해서 사용
+    # 2. GITHUB_ACTIONS에게 상위 권한 주는 방법
+    permissions:
+        issues: write
+
     steps:
       - name: echo
         run: |
