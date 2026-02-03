@@ -14,3 +14,16 @@ jobs:
       - name: echo
         run: |
           echo "메시지 : ${{ inputs.message }}"
+    
+      - name: 이슈 생성
+        uses: actions/github-script@v8  # 이미 작성된 run들을 가져다가 쓰는 것 -> 여러가지 설정만 넣어주면 복잡한 내부 작업은 이미 작성된 것을 사용
+        # node 기반의 js를 작동하게 하는 것.
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            script: |
+                await github.rest.issues.create({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: '이슈 자동 생성',
+                    body : '${{ inputs.message }}'
+                })
