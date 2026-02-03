@@ -8,15 +8,15 @@ on:
         inputs:
             # inputs.<변수명>
             message:
-                description: "출력할 메세지"
+                description: "출력할 메시지"
                 required: false
                 default: "안녕 깃허브 액션!"
 
 # 어떤 job들이 있는지
 jobs:
     echo: # job의 이름을 지정
-        runs-on: ubuntu-latest # 가장 버전의 github에서 제공하는 ubuntu 머신
+        runs-on: ubuntu-latest # 최신 버전의 github에서 제공하는 ubuntu 머신
         steps:
             - name: Echo Message
-            #   run: echo "Hello GitHub Actions"
-              run: echo "${{ inputs.message }}" by ${{ github.actor }}
+#              run : echo "Hello GitHub Actions"        
+              run : echo "${{ inputs.message }} by ${{ github.actor }}"
