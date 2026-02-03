@@ -2,6 +2,9 @@ name: 02. trigger push
 
 on:
   push: # push했을 때 구동
+    branches:
+      # - "**" # 모든 브랜치 (default)
+      - "main"
 
 jobs:
   echo:
