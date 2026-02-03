@@ -26,10 +26,10 @@ jobs:
                 webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
                 webhook-type: incoming-webhook
 
-                payloads: |
-                   text: |
-                      ${SLACK_WEBHOOK_URL}
-                      - repo: ${{ github.repository }}
-                      - branch: ${{ github.ref_name }}
-                      - actor: ${{ github.actor }}
-                      - sha: ${{ github.sha }}
+                payload: |
+                    text: |
+                    ${{ env.var_msg}}
+                    - repo: ${{ github.repository }}
+                    - branch: ${{ github.ref_name }}
+                    - actor: ${{ github.actor }}
+                    - sha: ${{ github.sha }}
