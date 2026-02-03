@@ -4,6 +4,13 @@ name: 01. dispatch echo
 # 이름 지정 뒤에는 'on' <- 어떤 조건에서 이 워크플로우 안에 있는 job이 트리거 될 것인지
 on:
     workflow_dispatch: # 수동(manually)하게 구동
+        # input
+        inputs:
+            # inputs.<변수명>
+            message:
+                description: "출력할 메세지"
+                required: false
+                default: "안녕 깃허브 액션!"
 
 # 어떤 job들이 있는지
 jobs:
@@ -11,4 +18,5 @@ jobs:
         runs-on: ubuntu-latest # 가장 버전의 github에서 제공하는 ubuntu 머신
         steps:
             - name: Echo Message
-              run: echo "Hello GitHub Actions"
+            #   run: echo "Hello GitHub Actions"
+              run: echo "${{ inputs.message }}" by ${{ github.actor }}
