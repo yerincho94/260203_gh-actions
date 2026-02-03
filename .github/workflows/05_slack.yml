@@ -18,3 +18,17 @@ jobs:
                echo "${{ vars.message }}"
                echo "${{ secrets.message2 }}"
                echo "${sec_msg}"
+            
+            - name: slack
+              uses: slackapi/slack-github-action@v2.1.1
+              with:
+                webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+                webhook-type: incoming-webhook
+
+                payloads: |
+                    text: |
+                      ${var_msg}
+                        - repo: ${{ github.repository }}
+                        - branch: ${{ github.ref_name }}
+                        - actor: ${{ github.actor }}
+                        - sha: ${{ github.sha }}
