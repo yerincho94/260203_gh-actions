@@ -26,4 +26,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 스케줄 실행
-              run: "echo 스케줄 실행 시각(UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
+              # date -u: UTC 시각 출력(스케줄 cron도 UTC 기준이라 같이 확인하기 좋습니다)
+              run: |
+                echo "스케줄 실행 시각(UTC): $(date -u '+%Y-%m-%d %H:%M:%S')"
