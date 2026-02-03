@@ -6,19 +6,18 @@ on:
       - "**" # 모든 브랜치 (default)
       # - "main"
 
-
 jobs:
   echo:
     runs-on: ubuntu-latest
     steps:
-      # - name: 푸시 시 메시지 출력
-        # run: echo "push가 감지되었습니다"
-        # run: echo "push가 감지되었습니다 (${{github.ref_name}})"
+      #   - name: 푸시 시 메시지 출력
+      #     # run: echo "push가 감지되었습니다"
+      #     run: echo "push가 감지되었습니다 (${{github.ref_name}})"
       - name: 브랜치 이름 출력
-        run: "현재 푸시 된 브랜치 명 : (${{github.ref_name}})"
+        run: "echo '현재 푸시 된 브랜치명 : (${{github.ref_name}})'"
       - name: 메인 브랜치 감지
         if: ${{ github.ref_name == 'main' }}
-        run: echo "push가 감지되었습니다 (${{github.ref_name}})"
+        run: echo "메인 브랜치에 대한 푸시입니다"
       - name: 메인 외 브랜치 감지
         if: ${{ github.ref_name != 'main' }}
         run: echo "메인이 아닌 브랜치에 대한 푸시입니다"
