@@ -6,6 +6,15 @@ on:
 jobs:
     slack:
         runs-on: ubuntu-latest
+
+        env:
+          var_msg: ${{ vars.message }}
+          sec_msg: ${{ secrets.message2 }}
+
         steps:
             - name: log
-              run: echo "정상 작동 중"
+            #   run: echo "정상 작동 중"
+              run: |
+               echo "${{ vars.message }}"
+               echo "${{ secrets.message2 }}"
+               echo "${sec_msg}"
